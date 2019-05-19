@@ -4,121 +4,10 @@
 #include <unistd.h>
 #include <conio.h>
 #include <windows.h>
-
-#define HEIGHT 800
-#define WIDTH 800
-#define RADIUS 30
-#define MASS 10
-#define POWER 60
-#define AUTOMOBILE 3
-
-typedef int action;
-
-double square(double z)
-{
-    return z * z;
-}
-void drawCircle(float, float, float, int);
-
-class AbstractCurve
-{
-public:
-    AbstractCurve() {}
-    virtual ~AbstractCurve() {}
-
-    virtual double getValue(double x) { return x; }
-    virtual double getDerivative(double x) { return 1; }
-};
-
-
-class Controller {
-    int m = 10000;
-    const double g = 5;
-    bool GameOver;
-    double mu = 0.2;
-    double velocity;
-    uint64_t epoch;
-    AbstractCurve* curve;
-    double position = WIDTH / 2;
-public:
-
-    static double P;
-    static double Fautomobile;
-    Controller(int m, int P, AbstractCurve *c) {
-        GameOver = false;
-        this -> m = m;
-//        this -> P = P;
-        this -> epoch = 0;
-        velocity = 0.1;
-        curve = c;
-    }
-
-    ~Controller() {
-
-    }
-
-    bool isGameOver() { return GameOver; }
-
-    void draw(GLFWwindow *window) {
-        glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
-        glClear (GL_COLOR_BUFFER_BIT);
-        glPointSize(10);
-        glLineWidth(2.5);
-        glColor3f(1.0, 0.0, 0.0);
-        glBegin(GL_LINE_STRIP);
-        for(int i = WIDTH / 2 - 0.9 * WIDTH / 2; i < WIDTH / 2 + 0.9 * WIDTH / 2; i++)
-        {
-            glVertex2d( i, ((i - WIDTH / 2.) * (i - WIDTH /  2.)) / 128 );
-        }
-        glEnd();
-
-        drawCircle(position, curve->getValue(position - WIDTH / 2.) + RADIUS, RADIUS, 150);
-        // Swap buffers
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    void updateTime() {
-        epoch++;
-    }
-    void updateVelocity() {
-        double Ftr = g * mu / sqrt(1 + square(curve->getDerivative(position - WIDTH / 2.0)));
-        double Fmg = g / sqrt(1 + square(1.0 / curve->getDerivative(position - WIDTH / 2.0)));
-
-        if(curve->getDerivative(position - WIDTH / 2.) >= 0)
-            Fmg = -Fmg;
-        if(velocity >= 0)
-            Ftr = -Ftr;
-        velocity += Fautomobile + Ftr + Fmg;
-
-    }
-
-    void step(action a) {
-        updateTime();
-        updateVelocity();
-        std::cout << P << std::endl;
-        position += velocity / sqrt(1 + square(curve->getDerivative(position - WIDTH / 2.0))) ;
-        if(position >= 680)
-            GameOver = true;
-    }
-
-    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, GL_TRUE);
-
-        if(key == GLFW_KEY_A && action == GLFW_PRESS)
-            Fautomobile = - AUTOMOBILE;
-        if(key == GLFW_KEY_D && action == GLFW_PRESS)
-            Fautomobile = AUTOMOBILE;
-        if((key == GLFW_KEY_A || key == GLFW_KEY_D) && action == GLFW_RELEASE)
-            Fautomobile = 0;
-
-    }
-};
-
-double Controller::P = 0;
-double Controller::Fautomobile = 0;
+#include <cstdlib>
+#include "common.h"
+#include "controller.h"
+#include "agent.h"
 
 
 class Parabola: AbstractCurve
@@ -128,6 +17,22 @@ public:
     Parabola(double coef): c(coef) {}
     double getValue(double x) { return c * x * x; }
     double getDerivative(double x) override { return 2 * c * x; }
+//    double getCentrePosition_x(double x)
+//    {
+//        double A,B,C,D,x1,x2; // Объявляем переменные с плавающей точкой.
+//        D = B * B - 4 * A * C;// Рассчитываем дискриминант
+//        if(D > 0)
+//    }
+//    double getCentrePosition_y(double x)
+};
+
+class Polinom_4: AbstractCurve
+{
+    double c;
+public:
+    Polinom_4(double coef): c(coef) {}
+    double getValue(double x) { return c * degree_4(x); }
+    double getDerivative(double x) { return 4 * c * x * x * x; }
 };
 
 
@@ -136,24 +41,72 @@ static void error_callback(int error, const char* description)
     fputs(description, stderr);
 }
 
-void drawCircle(float cx, float cy, float r, int num_segments) {
-    glBegin(GL_LINE_LOOP);
-    for (int ii = 0; ii < num_segments; ii++)   {
-        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
-        float x = r * cosf(theta);//calculate the x component
-        float y = r * sinf(theta);//calculate the y component
-        glVertex2f(x + cx, y + cy);//output vertex
+int epoch(int itr, Controller& controller, AbstractAgent* agent) {
+    int reward = 0;
+    for(int i = 0; i < itr; i++) {
+        State state = controller.getState();
+        action action = agent->getAction(state);
+        controller.step(action);
+        if(controller.isGameOver()) {
+            reward += itr;
+            agent->update(reward, state, controller.getState(), action);
+            return reward;
+        }
+        reward--;
+        agent->update(reward, state, controller.getState(), action);
     }
-    glEnd();
+    return reward;
 }
-
 
 using namespace std;
 
 
 int main() {
     auto curve = (AbstractCurve*) new Parabola(1.0 / 128);
+//    auto curve_4 = (AbstractCurve*) new Polinom_4(1.0 / 20000);
     Controller controller(MASS, 0, curve);
+//    Controller controller(MASS, 0, curve_4);
+    auto agent = new AgentQ();
+
+
+    // Main loop
+    int epochCounter = 1;
+    double gamma = 0.5;
+    double sum = 0;
+    int last = 0;
+    double averegest[100];
+    while (epochCounter < 300000) {
+        double r = epoch(10000, controller, (AbstractAgent*)agent);
+        agent->setGamma(gamma);
+        gamma = 1.0 / (1 + 0.1 * epochCounter);
+
+        //        cout << r << endl;
+
+        //calculating averege
+        //ofstream fout;
+
+        if(epochCounter < 101) {
+            averegest[epochCounter - 1] = r;
+            sum += r;
+            cout << sum / epochCounter << endl;
+
+        }
+        else {
+            sum -= averegest[last];
+            sum += r;
+            averegest[last] = r;
+            last = (last + 1) % 100;
+
+            if(epochCounter % 100 == 0) {
+                double averege = sum / 100;
+                cout << averege << endl;
+            }
+        }
+        controller.reset();
+        epochCounter++;
+    }
+
+
     GLFWwindow *window;
 
     if (!glfwInit()) {
@@ -177,18 +130,22 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
     // see https://www.opengl.org/sdk/docs/man2/xhtml/glOrtho.xml
     glOrtho(0.0, HEIGHT, 0.0, WIDTH, 0.0, 1.0); // this creates a canvas you can do 2D drawing on
 
     glfwSetKeyCallback(window, Controller::key_callback);
-    // Main loop
-    while (!glfwWindowShouldClose(window) && !controller.isGameOver() ) {
-        // Draw gears
-        controller.draw(window);
-        controller.step(0);
-        usleep(200);
 
+
+    agent->setGamma(0);
+    while (!glfwWindowShouldClose(window)) {
+        for(int i = 0; i < 400; i++) {
+            controller.draw(window);
+            State state = controller.getState();
+            action action = agent->getAction(state);
+            controller.step(action);
+            usleep(200);
+        }
+        controller.reset();
     }
 
     // Terminate GLFW

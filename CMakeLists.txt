@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_C_FLAGS -m32)
 #set(CMAKE_CXX_FLAGS -m32)
 
-add_executable(untitled main.cpp)
+add_executable(untitled main.cpp controller.h common.h controller.cpp agent.h agent.cpp)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 ##FIND_PACKAGE(GLUT REQUIRED)
