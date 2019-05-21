@@ -49,7 +49,8 @@ int epoch(int itr, Controller& controller, AbstractAgent* agent) {
         action action = agent->getAction(state);
         controller.step(action);
         if(controller.isGameOver()) {
-            reward +=  itr;
+//            reward +=  itr;
+            reward += 100;
             agent->update(reward, state, controller.getState(), action);
             return reward;
         }
@@ -100,7 +101,11 @@ int main() {
 
             if(epochCounter % 100 == 0) {
                 double averege = sum / 100;
-                cout << averege << endl;
+                cout << averege << " " << controller.getState().velocity << " " << controller.getState().position ;
+                cout << " " << agent->QSTAY[0][agent->getIndexVelocity(controller.getState().velocity)] << " " ;
+                cout << agent->QLEFT[0][agent->getIndexVelocity(controller.getState().velocity)] << " ";
+                cout << agent->QRIGHT[0][agent->getIndexVelocity(controller.getState().velocity)] << endl;
+
                 fout << averege << endl;
             }
         }

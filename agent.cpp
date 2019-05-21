@@ -5,7 +5,7 @@
 #include "agent.h"
 #include "controller.h"
 
-const double alpha = 0.01;
+const double alpha = 1;
 
 AgentQ::AgentQ() {
 //    for(int i = 0; i < GRANULARITY; i++) {
@@ -25,7 +25,7 @@ AgentQ::AgentQ() {
 
 //pos >= 0
 int AgentQ::getIndexPosition(double pos) {
-//    return (int)pos;
+    //return (int)pos;
 
     return 0;
 }
@@ -88,21 +88,21 @@ void AgentQ::update(int reward, State state, State newState, action a) {
     int vel = getIndexVelocity(state.velocity);
     if(a == STAY) {
         double tmp = QSTAY[pos][vel];
-        QSTAY[pos][vel] = (1 - alpha) * QSTAY[pos][vel] + alpha * (reward + gamma * getMaxQ(newState));
+        QSTAY[pos][vel] =  alpha * (reward + gamma * getMaxQ(newState));//need 1-alfa
         double delta = QSTAY[pos][vel] - tmp;
 //        QLEFT[pos][vel] -= delta / 2;
 //        QRIGHT[pos][vel] -= delta / 2;
     }
     if(a == LEFT) {
         double tmp = QLEFT[pos][vel];
-        QLEFT[pos][vel] = (1 - alpha) * QLEFT[pos][vel] + alpha * (reward + gamma * getMaxQ(newState));
+        QLEFT[pos][vel] =  alpha * (reward + gamma * getMaxQ(newState));
         double delta = QLEFT[pos][vel] - tmp;
 //        QSTAY[pos][vel] -= delta / 2;
 //        QRIGHT[pos][vel] -= delta / 2;
     }
     if(a == RIGHT) {
         double tmp = QRIGHT[pos][vel];
-        QRIGHT[pos][vel] = (1 - alpha) * QRIGHT[pos][vel] + alpha * (reward + gamma * getMaxQ(newState));
+        QRIGHT[pos][vel] = alpha * (reward + gamma * getMaxQ(newState));
         double delta = QRIGHT[pos][vel] - tmp;
 //        QSTAY[pos][vel] -= delta / 2;
 //        QLEFT[pos][vel] -= delta / 2;

@@ -7,8 +7,8 @@
 
 
 #define EPOCHCOUNTER 300000
-#define ITR 400
-#define WINPOS 700
+#define ITR 300
+#define WINPOS 650
 #define HEIGHT 800
 #define WIDTH 800
 #define RADIUS 10
@@ -16,7 +16,7 @@
 #define POWER 60
 #define AUTOMOBILE 3
 #define  REWARD -1
-#define GRANULARITY 1
+#define GRANULARITY 1000
 #define VEL_GRANUALITY 3
 #define MAX_VLOCITY 100
 #define DEVIDE 10

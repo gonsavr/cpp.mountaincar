@@ -30,15 +30,15 @@ public:
 };
 
 class AgentQ: AbstractAgent {
-    double QSTAY[GRANULARITY][VEL_GRANUALITY];//changed VEL_GRANUALITY
-    double QRIGHT[GRANULARITY][VEL_GRANUALITY];
-    double QLEFT[GRANULARITY][VEL_GRANUALITY];
-    double gamma = 0.99;
+
+    double gamma = 0.5;
     double getMaxQ(State state);
 public:
     AgentQ();
     ~AgentQ();
-
+    double QSTAY[GRANULARITY][VEL_GRANUALITY];//changed VEL_GRANUALITY
+    double QRIGHT[GRANULARITY][VEL_GRANUALITY];
+    double QLEFT[GRANULARITY][VEL_GRANUALITY];
     //pos >= 0
     int getIndexPosition(double pos);
     int getIndexVelocity(double vel);
