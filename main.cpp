@@ -57,7 +57,7 @@ public:
 static void error_callback(int error, const char* description)
 {
     fputs(description, stderr);
-}
+}   
 
 int epoch(int itr, Controller& controller, AbstractAgent* agent) {
     int reward = 0;
