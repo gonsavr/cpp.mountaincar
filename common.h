@@ -6,7 +6,7 @@
 #define UNTITLED_COMMON_H
 
 
-#define EPOCHCOUNTER 3000
+#define EPOCHCOUNTER 300000
 #define ITR 400
 #define WINPOS 700
 #define HEIGHT 800
@@ -40,7 +40,7 @@ public:
     virtual double getValue(double x) { return x; }
     virtual double getDerivative(double x) { return 1; }
     virtual double getCentrePosition_x(double x) { return x; }
-    virtual double getCentrePosition_y(double x0, double x1) { return getValue(x0) + RADIUS; }
+    virtual double getCentrePosition_y(double x) { return getValue(x) + RADIUS; }
 };
 
 inline double square(double z) { return z * z; }

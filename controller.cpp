@@ -3,7 +3,6 @@
 //
 
 #include <math.h>
-#include <iostream>
 #include "common.h"
 #include "controller.h"
 
@@ -21,7 +20,6 @@ void drawCircle(float cx, float cy, float r, int num_segments) {
     }
     glEnd();
 }
-
 
 
 Controller::Controller(int m, int P, AbstractCurve *c) {
@@ -51,9 +49,7 @@ void Controller::draw(GLFWwindow *window) {
 //        }
 //        glEnd();
 
-    drawCircle(curve->getCentrePosition_x(position - WIDTH / 2), curve->getValue(position - WIDTH / 2.) + RADIUS, RADIUS, 150);
-    std::cout << curve->getCentrePosition_x(position - WIDTH / 2) << std::endl;
-
+    drawCircle(position, curve->getValue(position - WIDTH / 2.) + RADIUS, RADIUS, 150);
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
