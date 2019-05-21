@@ -78,8 +78,8 @@ int main() {
     double averegest[100];
     ofstream fout;
     fout.open("values.txt");
-    while (epochCounter < 300000) {
-        double r = epoch(150, controller, (AbstractAgent*)agent);
+    while (epochCounter < EPOCHCOUNTER) {
+        double r = epoch(ITR, controller, (AbstractAgent*)agent);
         agent->setGamma(gamma);
         gamma = 1.0 / (1 + 0.1 * epochCounter);
 

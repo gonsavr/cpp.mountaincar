@@ -6,7 +6,8 @@
 #define UNTITLED_COMMON_H
 
 
-
+#define EPOCHCOUNTER 300000
+#define ITR 400
 #define WINPOS 700
 #define HEIGHT 800
 #define WIDTH 800
@@ -19,6 +20,7 @@
 #define VEL_GRANUALITY 3
 #define MAX_VLOCITY 100
 #define DEVIDE 10
+
 
 enum action{ STAY, LEFT, RIGHT };
 
