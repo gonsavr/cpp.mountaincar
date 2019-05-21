@@ -9,6 +9,8 @@
 #define EPOCHCOUNTER 300000
 #define ITR 300
 #define WINPOS 650
+#define ITR 400
+#define WINPOS 700
 #define HEIGHT 800
 #define WIDTH 800
 #define RADIUS 10

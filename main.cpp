@@ -106,6 +106,7 @@ int main() {
                 cout << agent->QLEFT[0][agent->getIndexVelocity(controller.getState().velocity)] << " ";
                 cout << agent->QRIGHT[0][agent->getIndexVelocity(controller.getState().velocity)] << endl;
 
+                cout << averege << endl;
                 fout << averege << endl;
             }
         }
