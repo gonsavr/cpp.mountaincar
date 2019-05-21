@@ -11,20 +11,37 @@
 #include <fstream>
 
 
-class Parabola: AbstractCurve
-{
+class Parabola: AbstractCurve {
     double c;
 public:
-    Parabola(double coef): c(coef) {}
+    Parabola(double coef) : c(coef) {}
+
     double getValue(double x) { return c * x * x; }
+
     double getDerivative(double x) override { return 2 * c * x; }
-//    double getCentrePosition_x(double x)
-//    {
-//        double A,B,C,D,x1,x2; // Объявляем переменные с плавающей точкой.
-//        D = B * B - 4 * A * C;// Рассчитываем дискриминант
-//        if(D > 0)
-//    }
-//    double getCentrePosition_y(double x)
+
+    double getCentrePosition_x(double x0, double R) {
+        if(getDerivative(x0) == 0) { return WIDTH / 2; }
+        else {
+            double A, B, C, D, x1;
+            A = 1.0 + 1.0 / (4 * square(C) *x0);
+            B = x0 + 1.0 / (2 * square(C) * x0);
+            C = square(x0) + square(C) * degree_4(x0) - square(R);
+            D = square(B) - 4 * A * C;
+            if(getDerivative(x0) < 0) {
+                x1 = (B + sqrt(D)) / 2;
+            }
+            if(getDerivative(x0) > 0) {
+                x1 = (B - sqrt(D)) / 2;
+            }
+            return x1;
+        }
+    }
+    double getCentrePosition_y(double x0, double x1) {
+        if(getDerivative(x0) < 0) {
+            return 1.0 / (2 * c) + c * square(x0) - x1 / (2 * c * x0);
+        }
+    }
 };
 
 class Polinom_4: AbstractCurve
@@ -89,7 +106,7 @@ int main() {
         if(epochCounter < 101) {
             averegest[epochCounter - 1] = r;
             sum += r;
-            cout << sum / epochCounter << endl;
+//            cout << sum / epochCounter << endl;
             fout << sum / epochCounter << endl;
         }
         else {
@@ -100,14 +117,13 @@ int main() {
 
             if(epochCounter % 100 == 0) {
                 double averege = sum / 100;
-                cout << averege << endl;
+//                cout << averege << endl;
                 fout << averege << endl;
             }
         }
         controller.reset();
         epochCounter++;
     }
-
 
     GLFWwindow *window;
 
