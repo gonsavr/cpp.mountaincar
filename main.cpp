@@ -79,7 +79,7 @@ int main() {
     ofstream fout;
     fout.open("values.txt");
     while (epochCounter < 300000) {
-        double r = epoch(10000, controller, (AbstractAgent*)agent);
+        double r = epoch(150, controller, (AbstractAgent*)agent);
         agent->setGamma(gamma);
         gamma = 1.0 / (1 + 0.1 * epochCounter);
 
@@ -91,7 +91,6 @@ int main() {
             sum += r;
             cout << sum / epochCounter << endl;
             fout << sum / epochCounter << endl;
-
         }
         else {
             sum -= averegest[last];

@@ -7,7 +7,7 @@
 
 
 
-#define WINPOS 580
+#define WINPOS 700
 #define HEIGHT 800
 #define WIDTH 800
 #define RADIUS 10
@@ -15,9 +15,10 @@
 #define POWER 60
 #define AUTOMOBILE 3
 #define  REWARD -1
-#define GRANULARITY 10000
-#define VEL_GRANUALITY 2
-#define MAX_VLOCITY 10
+#define GRANULARITY 1
+#define VEL_GRANUALITY 3
+#define MAX_VLOCITY 100
+#define DEVIDE 10
 
 enum action{ STAY, LEFT, RIGHT };
 

@@ -5,28 +5,43 @@
 #include "agent.h"
 #include "controller.h"
 
-const double alpha = 0.001;
+const double alpha = 0.01;
 
 AgentQ::AgentQ() {
-    for(int i = 0; i < GRANULARITY; i++) {
-        for(int j = 0; j < VEL_GRANUALITY; j++) {
-            QSTAY[i][j] = 1.0 / 3;
-            QRIGHT[i][j] = 1.0 / 3;
-            QLEFT[i][j] = 1.0 / 3;
-        }
+//    for(int i = 0; i < GRANULARITY; i++) {
+//        for(int j = 0; j < VEL_GRANUALITY; j++) {
+//            QSTAY[i][j] = 1.0 / 3;
+//            QRIGHT[i][j] = 1.0 / 3;
+//            QLEFT[i][j] = 1.0 / 3;
+//        }
+//    }
+
+    for (int j = 0; j < VEL_GRANUALITY; j++) {
+        QSTAY[0][j] = 1.0 / 3;
+        QLEFT[0][j] = 1.0 / 3;
+        QRIGHT[0][j] = 1.0 / 3;
     }
 }
 
 //pos >= 0
 int AgentQ::getIndexPosition(double pos) {
-    return (int)pos;
+//    return (int)pos;
+
+    return 0;
 }
 int AgentQ::getIndexVelocity(double vel) {
+//    if(vel > 0)
+//        return 1;
+//    if(vel <= 0)
+//        return 0;
+
+//    return (int)(vel / DEVIDE);
+
     if(vel > 0)
+        return 2;
+    if(vel == 0)
         return 1;
-    if(vel <= 0)
-        return 0;
-//    return 0;
+    return 0;
 }
 
 action AgentQ::getAction(State state) {
