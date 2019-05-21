@@ -5,7 +5,7 @@
 #include "agent.h"
 #include "controller.h"
 
-const double alpha = 0.01;
+const double alpha = 0.001;
 
 AgentQ::AgentQ() {
     for(int i = 0; i < GRANULARITY; i++) {

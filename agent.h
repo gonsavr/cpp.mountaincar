@@ -13,7 +13,7 @@
 class AbstractAgent {
 public:
     AbstractAgent() {}
-    virtual action getAction(State state) {}
+    virtual action getAction(State state) { }
     virtual void update(int reward, State state, State newState, action a) {}
     virtual ~AbstractAgent() {};
 };
@@ -33,7 +33,7 @@ class AgentQ: AbstractAgent {
     double QSTAY[GRANULARITY][VEL_GRANUALITY];//changed VEL_GRANUALITY
     double QRIGHT[GRANULARITY][VEL_GRANUALITY];
     double QLEFT[GRANULARITY][VEL_GRANUALITY];
-    double gamma = 0.5;
+    double gamma = 0.99;
     double getMaxQ(State state);
 public:
     AgentQ();

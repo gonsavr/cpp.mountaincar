@@ -8,6 +8,7 @@
 #include "common.h"
 #include "controller.h"
 #include "agent.h"
+#include <fstream>
 
 
 class Parabola: AbstractCurve
@@ -48,7 +49,7 @@ int epoch(int itr, Controller& controller, AbstractAgent* agent) {
         action action = agent->getAction(state);
         controller.step(action);
         if(controller.isGameOver()) {
-            reward += itr;
+            reward +=  itr;
             agent->update(reward, state, controller.getState(), action);
             return reward;
         }
@@ -75,6 +76,8 @@ int main() {
     double sum = 0;
     int last = 0;
     double averegest[100];
+    ofstream fout;
+    fout.open("values.txt");
     while (epochCounter < 300000) {
         double r = epoch(10000, controller, (AbstractAgent*)agent);
         agent->setGamma(gamma);
@@ -83,12 +86,11 @@ int main() {
         //        cout << r << endl;
 
         //calculating averege
-        //ofstream fout;
-
         if(epochCounter < 101) {
             averegest[epochCounter - 1] = r;
             sum += r;
             cout << sum / epochCounter << endl;
+            fout << sum / epochCounter << endl;
 
         }
         else {
@@ -100,6 +102,7 @@ int main() {
             if(epochCounter % 100 == 0) {
                 double averege = sum / 100;
                 cout << averege << endl;
+                fout << averege << endl;
             }
         }
         controller.reset();
@@ -135,7 +138,7 @@ int main() {
 
     glfwSetKeyCallback(window, Controller::key_callback);
 
-
+    fout.close();
     agent->setGamma(0);
     while (!glfwWindowShouldClose(window)) {
         for(int i = 0; i < 400; i++) {
